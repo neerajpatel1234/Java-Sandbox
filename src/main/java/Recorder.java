@@ -1,8 +1,13 @@
 //package nz.ac.wgtn.swen225.lc.recorder;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+import org.json.JSONObject;
 
 /**
  * Recorder.java
@@ -99,18 +104,26 @@ public class Recorder {
   /**
    * When called this will end the recording and save the recording to a file.*/
   private void endRecording() {
-    // ---- Stop recording and save the current game in jason format ---- //
-    /*#
+    // ---- Ask user the location and file name to save as ---- //
+    Scanner scanner = new Scanner(System.in);
+
+    System.out.print("Enter the location to save the recording: ");
+    String location = scanner.nextLine();
+
+    System.out.print("Enter the file name (including extension, e.g., recording.json): ");
+    String fileName = scanner.nextLine();
+
+    // Combine location and file name to form the complete path
+    String filePath = Paths.get(location, fileName).toString();
+
+    // ---- Save the current game in JSON format ---- //
     System.out.println("Recorder: Recording has stopped & Saving game. \n");
     try {
-      JSONObject jsonRecording = new JSONObject(currentRecording);
-      String jsonString = jsonRecording.toString();
-      Files.writeString(Paths.get("gameRecording.json"), jsonString);
+      JSONObject gameJson = new JSONObject(currentRecording);
+      Files.writeString(Paths.get(filePath), gameJson.toString());
     } catch (IOException e) {
       System.out.println("Error: Unable to save game recording. " + e.getMessage());
     }
-
-     */
 
   }
 
@@ -217,7 +230,7 @@ public class Recorder {
   }
 
 
-  // todo delete once ----------------------------------- MAIN ----------------------------------- //
+  // todo delete once ---------------------------- MAIN ---------------------------- //
 
   /**
    * The main method for the Recorder program.
