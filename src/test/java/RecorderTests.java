@@ -78,23 +78,44 @@ public class RecorderTests {
     test.addToRecording("PLAYER | MOVE_LEFT");
     test.addToRecording("ACTOR | MOVE_RIGHT");
 
-    Assertions.assertEquals(3, test.currentRecording.size());
+    Assertions.assertEquals(3, test.getCurrentRecording().size());
 
     // --- Check the sequence numbers are correct --- //
-    Assertions.assertEquals(0, test.currentRecording.get(0).sequenceNumber);
-    Assertions.assertEquals(1, test.currentRecording.get(1).sequenceNumber);
+    Assertions.assertEquals(0, test.getCurrentRecording().get(0).getSequenceNumber());
+    Assertions.assertEquals(1, test.getCurrentRecording().get(1).getSequenceNumber());
 
     // --- Check that the data was recorded correctly --- //
-    Assertions.assertEquals("PLAYER", test.currentRecording.get(1).actor);
-    Assertions.assertEquals("MOVE_LEFT", test.currentRecording.get(1).other);
+    Assertions.assertEquals("PLAYER", test.getCurrentRecording().get(1).getActor());
+    Assertions.assertEquals("MOVE_LEFT", test.getCurrentRecording().get(1).getOther());
 
-    Assertions.assertEquals("ACTOR", test.currentRecording.get(2).actor);
-    Assertions.assertEquals("MOVE_RIGHT", test.currentRecording.get(2).other);
+    Assertions.assertEquals("ACTOR", test.getCurrentRecording().get(2).getActor());
+    Assertions.assertEquals("MOVE_RIGHT", test.getCurrentRecording().get(2).getOther());
+  }
+
+  /**
+   * Test that the endRecording() method is working as expected.
+   */
+  @Test
+  void test_endRecording() {
+    // TODO: Implement
+
+    Recorder test = new Recorder();
+
+  }
+
+  /**
+   * Test that the loadGame() method is working as expected.
+   */
+  @Test
+  void test_loadGame() {
+    // TODO: Implement
+
+    Recorder test = new Recorder();
+
   }
 
   /**
    * Test that the stepByStepReplay() method is working as expected.
-   * This will test that the stepByStepReplay() method is working as expected.
    */
   @Test
   void test_stepByStepReplay() {
@@ -106,7 +127,6 @@ public class RecorderTests {
 
   /**
    * Test that the autoReplay() method is working as expected.
-   * This will test that the autoReplay() method is working as expected.
    */
   @Test
   void test_autoReplay() {
@@ -116,29 +136,6 @@ public class RecorderTests {
 
   }
 
-  /**
-   * Test that the loadGame() method is working as expected.
-   * This will test that the loadGame() method is working as expected.
-   */
-  @Test
-  void test_loadGame() {
-    // TODO: Implement
-
-    Recorder test = new Recorder();
-
-  }
-
-  /**
-   * Test that the getIsRecording() method is working as expected.
-   * This will test that the getIsRecording() method is working as expected.
-   */
-  @Test
-  void test_getIsRecording() {
-    Recorder test = new Recorder();
-
-
-
-  }
 
 }
 

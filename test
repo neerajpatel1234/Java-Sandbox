@@ -1,0 +1,1 @@
+{"0":{"actor":"START","sequenceNumber":0,"other":"1"},"1":{"actor":"PLAYER","sequenceNumber":1,"other":"MOVE_LEFT"},"2":{"actor":"ACTOR","sequenceNumber":2,"other":"MOVE_RIGHT"},"3":{"actor":"PLAYER","sequenceNumber":3,"other":"na"},"4":{"actor":"PLAYER","sequenceNumber":4,"other":"na"}}
