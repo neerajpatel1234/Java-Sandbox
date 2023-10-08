@@ -4,13 +4,15 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * This is a collection of tests for the Recorder class.
  * It will test the methods in the Recorder class to ensure that they are working as expected.
  * It will test the following methods:
  * TODO add methods to test
  *
- * @Author: Neeraj Patel (300604056).
+ * @author Neeraj Patel (300604056).
  */
 public class RecorderTests {
   /**
@@ -30,11 +32,11 @@ public class RecorderTests {
     String level = "1";
 
     // --- Test that the initial state is WAITING --- //
-    Assertions.assertEquals("WAITING", test.getState());
+    assertEquals("WAITING", test.getState());
 
     // --- Test that the state is RECORDING after startRecording() is called --- //
     test.setRecording(level);
-    Assertions.assertEquals("RECORDING", test.getState());
+    assertEquals("RECORDING", test.getState());
   }
 
   /**
@@ -49,8 +51,8 @@ public class RecorderTests {
     // --- Add elements to the recording --- //
     test.setRecording(level);
     test.addToRecording("PLAYER | MOVE_LEFT");
-    test.addToRecording("ACTOR | MOVE_LEFT");
-    test.addToRecording("ACTOR | MOVE_RIGHT");
+    test.addToRecording("MONSTER | MOVE_LEFT");
+    test.addToRecording("MONSTER | MOVE_RIGHT");
     test.addToRecording("PLAYER | MOVE_RIGHT");
 
     // --- Test that the elements have been added to the recording --- //
@@ -60,7 +62,7 @@ public class RecorderTests {
 
     // --- Test that the elements have been added to the recording in the correct order --- //
     for (int i = 0; i < test.getCurrentRecording().size(); i++) {
-      Assertions.assertEquals(sequenceNumber,
+      assertEquals(sequenceNumber,
               test.getCurrentRecording().get(i).getSequenceNumber());
       sequenceNumber++;
     }
@@ -78,18 +80,18 @@ public class RecorderTests {
     test.addToRecording("PLAYER | MOVE_LEFT");
     test.addToRecording("ACTOR | MOVE_RIGHT");
 
-    Assertions.assertEquals(3, test.getCurrentRecording().size());
+    assertEquals(3, test.getCurrentRecording().size());
 
     // --- Check the sequence numbers are correct --- //
-    Assertions.assertEquals(0, test.getCurrentRecording().get(0).getSequenceNumber());
-    Assertions.assertEquals(1, test.getCurrentRecording().get(1).getSequenceNumber());
+    assertEquals(0, test.getCurrentRecording().get(0).getSequenceNumber());
+    assertEquals(1, test.getCurrentRecording().get(1).getSequenceNumber());
 
     // --- Check that the data was recorded correctly --- //
-    Assertions.assertEquals("PLAYER", test.getCurrentRecording().get(1).getActor());
-    Assertions.assertEquals("MOVE_LEFT", test.getCurrentRecording().get(1).getOther());
+    assertEquals("PLAYER", test.getCurrentRecording().get(1).getActor());
+    assertEquals("MOVE_LEFT", test.getCurrentRecording().get(1).getMove());
 
-    Assertions.assertEquals("ACTOR", test.getCurrentRecording().get(2).getActor());
-    Assertions.assertEquals("MOVE_RIGHT", test.getCurrentRecording().get(2).getOther());
+    assertEquals("ACTOR", test.getCurrentRecording().get(2).getActor());
+    assertEquals("MOVE_RIGHT", test.getCurrentRecording().get(2).getMove());
   }
 
   /**
@@ -97,11 +99,25 @@ public class RecorderTests {
    */
   @Test
   void test_endRecording() {
-    // TODO: Implement
-
     Recorder test = new Recorder();
 
+    test.setRecording("1");
+    test.addToRecording("PLAYER | MOVE_LEFT");
+    test.addToRecording("ACTOR | MOVE_RIGHT");
+    test.addToRecording("END");
+
+    // --- Check the results --- //
+    assertEquals(3, test.getCurrentRecording().size());
+
+    // --- Check that the json data was recorded correctly --- //
+    String expectedJson = "{\"0\":{\"actor\":\"START\",\"sequenceNumber\":0,\"move\":\"1\"},\"1\":{\"actor\":\"PLAYER\"" +
+            ",\"sequenceNumber\":1,\"move\":\"MOVE_LEFT\"},\"2\":{\"actor\":\"ACTOR\",\"sequenceNumber\":2,\"move\":" +
+            "\"MOVE_RIGHT\"},\"3\":{\"actor\":\"MONSTER\",\"sequenceNumber\":3,\"move\":\"MOVE_UP\"},\"4\":{\"actor\":" +
+            "\"MONSTER\",\"sequenceNumber\":4,\"move\":\"MOVE_DOWN\"}}";
+
+    assertEquals(expectedJson, test.getLoadedRecording().toString());
   }
+
 
   /**
    * Test that the loadGame() method is working as expected.
@@ -131,11 +147,7 @@ public class RecorderTests {
   @Test
   void test_autoReplay() {
     // TODO: Implement
-
-    Recorder test = new Recorder();
-
   }
-
 
 }
 

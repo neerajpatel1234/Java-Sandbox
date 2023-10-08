@@ -11,19 +11,19 @@ public class RecordItem {
   // ----------------------------------- VARIABLES ----------------------------------- //
   int sequenceNumber; // the turn number that the action was taken on
   String actor; // the actor that took the action
-  String other; // any other information that is needed to be stored
+  String move; // movement information about the actor
 
   /**
    * Constructor for RecordItem class.
    *
    * @param seqNumber - the sequence number of the action.
    * @param actor     - the actor that took the action.
-   * @param other     - any other information that is needed to be stored.
+   * @param move    - movement information about the actor
    */
-  public RecordItem(int seqNumber, String actor, String other) {
+  public RecordItem(int seqNumber, String actor, String move) {
     this.sequenceNumber = seqNumber;
     this.actor = actor;
-    this.other = other;
+    this.move = move;
   }
 
   /**
@@ -46,12 +46,12 @@ public class RecordItem {
 
 
   /**
-   * Returns any other information that is needed to be stored.
+   * Returns any movement information that is needed to be stored.
    *
-   * @return other - any other information that is needed to be stored.
+   * @return movement - the move made by the actor.
    */
-  public String getOther() {
-    return other;
+  public String getMove() {
+    return move;
   }
 
   /**
@@ -67,8 +67,8 @@ public class RecordItem {
             + ", actor='"
             + actor
             + '\''
-            + ", other='"
-            + other
+            + ", movement='"
+            + move
             + '\''
             + ']';
   }
