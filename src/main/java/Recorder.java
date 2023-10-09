@@ -20,7 +20,7 @@ import org.json.JSONObject;
  */
 public class Recorder {
   // ----------------------------------- VARIABLES ----------------------------------- //
-  private int replaySpeed; // 1 (slowest auto replay speed) to 10 (fastest auto replay speed)
+  private int replaySpeed; // 1 (fastest auto replay speed) to 10 (slowest auto replay speed)
 
   private Map<Integer, RecordItem> currentRecording;
 
@@ -259,7 +259,7 @@ public class Recorder {
    * @param speed - the speed to set the replay speed to.
    */
   public void setReplaySpeed(int speed) {
-    if (speed <= 1 || speed >= 10) {
+    if (speed < 1 || speed > 10) {
       System.out.println("Error: Speed must be from 1 to 10.");
       return;
     }
