@@ -9,28 +9,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * This is a collection of tests for the Recorder class.
  * It will test the methods in the Recorder class to ensure that they are working as expected.
  * It will test the following methods:
- * TODO add methods to test
  *
  * @author Neeraj Patel (300604056).
  */
 public class RecorderTests {
-  /**
-   * Test that the JUnit tests are working.
-   */
-  @Test
-  void test_Junit_Working() {
-    Assertions.assertTrue(true);
-  }
-
   /**
    * Test the initialisation and states of startRecording() method.
    */
   @Test
   void test_startRecording() {
     Recorder test = new Recorder();
-    String level = "1";
 
+    test.startRecording("1");
+    System.out.println(test.getCurrentRecording().get(0));
 
+    assertEquals(1, test.getCurrentRecording().size());
+    assertEquals(0, test.getCurrentRecording().get(0).getSequenceNumber());
+    assertEquals("START", test.getCurrentRecording().get(0).getActor());
   }
 
   /**
@@ -94,6 +89,16 @@ public class RecorderTests {
   @Test
   void test_endRecording() {
     // TODO: Implement
+    Recorder test = new Recorder();
+
+    test.startRecording("1");
+    test.addToRecording("PLAYER | MOVE_SOMEWHERE");
+    test.addToRecording("MONSTER | MOVE_SOMEWHERE");
+    test.addToRecording("END");
+
+    assertEquals(4, test.getCurrentRecording().size());
+
+
   }
 
 

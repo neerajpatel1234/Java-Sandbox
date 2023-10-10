@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,7 +26,8 @@ public class Recorder {
   private Map<Integer, RecordItem> currentRecording;
 
   private int currentSequenceNumber = 0;
-
+  
+  private JFileChooser fileFinder;
 
   // ----------------------------------- CONSTRUCTOR ----------------------------------- //
 
@@ -91,7 +93,7 @@ public class Recorder {
    * When called this will end the recording and save the recording to a file.*/
   private void endRecording() {
     // ---- Ask user the location and file name ---- //
-    JFileChooser fileFinder = new JFileChooser();
+    fileFinder = new JFileChooser();
     fileFinder.setDialogTitle("Select file to save recording to:");
 
     // ---- Validate the file ---- //
@@ -100,7 +102,7 @@ public class Recorder {
       String filePath = fileFinder.getSelectedFile().getAbsolutePath();
 
       // ---- Save the current game in JSON format ---- //
-      System.out.println("[DEBUG] Recorder: saved json (cr size: " + currentRecording.size() + ")");
+      System.out.println("[DEBUG] Recorder: saved json; c.r. size: " + currentRecording.size());
       try {
         JSONObject gameJson = new JSONObject(currentRecording);
         Files.writeString(Paths.get(filePath), gameJson.toString());
@@ -118,16 +120,17 @@ public class Recorder {
     System.out.println("[DEBUG] Recorder: Loading game.");
 
     // ---- Ask user for the file to load ---- //
-    JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setDialogTitle("Select file to load recording from:");
-    int userAction = fileChooser.showOpenDialog(null);
+    fileFinder = new JFileChooser();
+    fileFinder.setDialogTitle("Select file to load recording from:");
+    int userAction = fileFinder.showOpenDialog(null);
     Map<Integer, RecordItem> loadedRecording = new HashMap<>();
+    currentRecording = new HashMap<>();
 
     // ---- Validate the file ---- //
     if (userAction == JFileChooser.APPROVE_OPTION) {
       try {
         // ---- Read the json file ---- //
-        String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+        String filePath = fileFinder.getSelectedFile().getAbsolutePath();
         String jsonData = Files.readString(Paths.get(filePath));
         JSONObject json = new JSONObject(jsonData);
 
@@ -152,22 +155,24 @@ public class Recorder {
       }
     }
 
-    // ---- Set the current recording to the loaded recording ---- //
-    currentRecording = loadedRecording;
+    // ---- Verify selected file ---- //
+    if (loadedRecording.isEmpty()) {
+      System.out.println("Error: No recording loaded.");
+      loadGame();
+    } else {
+      currentRecording = loadedRecording;
+    }
   }
 
   /**
    * When called this will replay the recording in steps when the user presses a button.
    */
   public void manualReplay() {
-    System.out.println("[DEBUG] Recorder: Step by step replaying.");
-
     // ---- Load the game ---- //
     loadGame();
-    int currentSequenceNumber = 0;
-    System.out.println("Press any key to step through the replay.");
 
     // ---- Display the loaded game ---- //
+    int currentSequenceNumber = 0;
     String level = currentRecording.get(currentSequenceNumber).getMove();
     System.out.println("[DEBUG] Recorder to App: Level [ " + level + " ] ");
     // todo: tell app to load level
@@ -176,7 +181,7 @@ public class Recorder {
     // ---- Wait for user input  ---- //
     try {
       while (currentSequenceNumber < currentRecording.size()) {
-        System.out.println("[DEBUG] Recorder: Press enter to continue...");
+        System.out.println("Press the enter key to step through the replay.");
         System.in.read();  // Wait for user input
 
         // -- Do next move when button pressed-- //
@@ -193,10 +198,11 @@ public class Recorder {
    * If the user has not set a speed, it will default to the slowest speed.
    */
   public void autoReplay() {
-    System.out.println("[DEBUG] Recorder: Auto replaying.");
-
     // ---- Load the game ---- //
     loadGame();
+
+    // ---- Ask user for replay speed ---- //
+    askReplaySpeed();
 
     // ---- Replay the game ---- //
     int currentSequenceNumber = 0;
@@ -238,6 +244,28 @@ public class Recorder {
     System.out.println("[DEBUG] Recorder to App: " + actor + " | " + move);
   }
 
+  /**
+   * When called this will ask the user for the replay speed.
+   */
+  private void askReplaySpeed() {
+    String userSpeed = JOptionPane.showInputDialog("Enter replay speed (1 to 10):");
+
+    // Validate the input speed
+    int newSpeed = 5; // Default speed
+    try {
+      newSpeed = Integer.parseInt(userSpeed);
+      if (newSpeed < 1 || newSpeed > 10) {
+        System.out.println("Error: Invalid input select a number from 1 and 10.");
+        askReplaySpeed();
+      }
+    } catch (NumberFormatException e) {
+      System.out.println("Error: Invalid input select a number from 1 and 10.");
+      askReplaySpeed();
+    }
+
+    replaySpeed = newSpeed;
+  }
+
 
   // ----------------------------------- GETTERS ----------------------------------- //
 
@@ -248,22 +276,6 @@ public class Recorder {
    */
   public Map<Integer, RecordItem> getCurrentRecording() {
     return Collections.unmodifiableMap(currentRecording);
-  }
-
-
-  // ----------------------------------- SETTERS ----------------------------------- //
-
-  /**
-   * This method will set the replay speed.
-   *
-   * @param speed - the speed to set the replay speed to.
-   */
-  public void setReplaySpeed(int speed) {
-    if (speed < 1 || speed > 10) {
-      System.out.println("Error: Speed must be from 1 to 10.");
-      return;
-    }
-    replaySpeed = speed;
   }
 
 
@@ -293,13 +305,11 @@ public class Recorder {
 
     // ---- Auto replay game ---- //
     System.out.println(" \n ---------- Auto Replay ----------");
-    recorder.setReplaySpeed(10);
     recorder.autoReplay();
 
     // ---- Manual replay game ---- //
     System.out.println(" \n ---------- Manual Replay ----------");
     recorder.manualReplay();
-
   }
 
 
